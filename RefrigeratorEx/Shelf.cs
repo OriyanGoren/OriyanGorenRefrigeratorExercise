@@ -6,15 +6,17 @@ namespace RefrigeratorEx
 {
     class Shelf : StorageUnit
     {
-        public int _floorNumber { get; set; }
-        private int _spaceOnShelf;
-        private List<Item> _items;
+        const int basicSpaceShelf = 30;
+
+        public int _floorNumber { get; }
+        private int _currentSpaceShelf;
+        public List<Item> _items { get; }
 
 
-        public Shelf(int floorNumber, int SpaceOnShelf, List<Item> items)
+        public Shelf(int floorNumber, int currentSpaceShelf, List<Item> items)
         {
             _floorNumber = floorNumber;
-            _spaceOnShelf = SpaceOnShelf;
+            _currentSpaceShelf = basicSpaceShelf;
             _items = items;
         }
 
@@ -22,7 +24,7 @@ namespace RefrigeratorEx
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Floor Number: {_floorNumber}");
-            sb.AppendLine($"The Space On The Shelf: {_spaceOnShelf}");
+            sb.AppendLine($"The Space Left On The Shelf: {_currentSpaceShelf}");
             sb.AppendLine("Names:");
             foreach (var item in _items)
             {
@@ -30,6 +32,17 @@ namespace RefrigeratorEx
             }
 
             return sb.ToString();
+        }
+
+        public int SpaceLeftOnShelf()
+        {
+            int spaceItemsShelf = 0;
+            foreach (var item in _items)
+            {
+                spaceItemsShelf += item._spaceItem;
+            }
+            _currentSpaceShelf -= spaceItemsShelf;
+            return _currentSpaceShelf;
         }
 
     }

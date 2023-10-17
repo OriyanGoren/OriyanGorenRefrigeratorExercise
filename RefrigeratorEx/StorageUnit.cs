@@ -6,8 +6,14 @@ namespace RefrigeratorEx
 {
     class StorageUnit
     {
-        protected int _identifier;
+        public static int uniqueId = 1;
+        public int _identifier { get; }
 
+
+        public StorageUnit()
+        {
+            _identifier = uniqueId++;
+        }
 
         public override string ToString()
         {
