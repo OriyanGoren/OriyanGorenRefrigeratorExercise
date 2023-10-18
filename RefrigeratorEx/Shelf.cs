@@ -4,10 +4,12 @@ using System.Text;
 
 namespace RefrigeratorEx
 {
-    class Shelf : StorageUnit
+    class Shelf
     {
         const int basicSpaceShelf = 30;
 
+        public static int IdCounter = 1;
+        public int _identifier { get; }
         public int _floorNumber { get; }
         private int _currentSpaceShelf;
         public List<Item> _items { get; }
@@ -15,6 +17,7 @@ namespace RefrigeratorEx
 
         public Shelf(int floorNumber, int currentSpaceShelf, List<Item> items)
         {
+            _identifier = IdCounter++;
             _floorNumber = floorNumber;
             _currentSpaceShelf = basicSpaceShelf;
             _items = items;
@@ -23,12 +26,13 @@ namespace RefrigeratorEx
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Floor Number: {_floorNumber}");
-            sb.AppendLine($"The Space Left On The Shelf: {_currentSpaceShelf}");
+            sb.AppendLine($"Identifier: {_identifier}");
+            sb.AppendLine($"Floor number: {_floorNumber}");
+            sb.AppendLine($"The space left on the shelf: {_currentSpaceShelf}");
             sb.AppendLine("Names:");
             foreach (var item in _items)
             {
-                sb.AppendLine($"- Name Of Item: {item._name}");
+                sb.AppendLine($"- Name of item: {item._name}");
             }
 
             return sb.ToString();

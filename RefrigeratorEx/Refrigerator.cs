@@ -5,13 +5,16 @@ using System.Linq;
 
 namespace RefrigeratorEx
 {
-    class Refrigerator : StorageUnit
+    class Refrigerator
     {
         const int numberOfShelves = 5;
         const int shelfSize = 30;
         const int requiredSpace = 20;
         DateTime today = DateTime.Today;
 
+        public static int IdCounter = 1;
+        public static List<Refrigerator> refrigerators = new List<Refrigerator>();
+        public int _identifier { get; }
         private String _model;
         private String _color;
         private int _numberOfShelves;
@@ -21,23 +24,26 @@ namespace RefrigeratorEx
 
         public Refrigerator(String model, String color, List<Shelf> shelves)
         {
+            _identifier = IdCounter++;
             _model = model;
             _color = color;
             _numberOfShelves = numberOfShelves;
             _shelves = shelves;
             _currentSpaceOnFrige = _numberOfShelves * shelfSize;
+            refrigerators.Add(this);
         }
 
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"Identifier: {_identifier}");
             sb.AppendLine($"Model: {_model}");
             sb.AppendLine($"Color: {_color}");
-            sb.AppendLine($"Number Of Shelves: {_numberOfShelves}");
+            sb.AppendLine($"Number of shelves: {_numberOfShelves}");
             sb.AppendLine("Shelves:");
             foreach (var shelf in _shelves)
             {
-                sb.AppendLine($"- Floor Of Shelf : {shelf._floorNumber}");
+                sb.AppendLine($"- Floor of shelf : {shelf._floorNumber}");
             }
 
             return sb.ToString();
@@ -171,13 +177,11 @@ namespace RefrigeratorEx
             return sortedShelves;
         }
 
-        /*
-        private static List<Refrigerator> SortRefrigeratorsByFreeSpace(List<Refrigerator> refrigerators)
+        public static List<Refrigerator> SortRefrigeratorsByFreeSpace()
         {
-            List<Refrigerator> sortedRefrigerators = refrigerators.OrderByDescending(r => r.SpaceLeftOnFridge()).ToList();
+            List<Refrigerator> sortedRefrigerators = refrigerators.OrderByDescending(refrigerator => refrigerator.SpaceLeftOnFridge()).ToList();
             return sortedRefrigerators;
         }
-        */
 
         public void GettingReadyForShopping()
         {
@@ -186,27 +190,54 @@ namespace RefrigeratorEx
                 CleaningTheFridge();
                 if (SpaceLeftOnFridge() < requiredSpace)
                 {
-                    DroppingItemsByPriority();
+                    ThrowingAwayItemsByPriority();
                 }
             }
-            Console.WriteLine("You have enough space in the refrigerator. Ready to go shopping!");
             return;
         }
 
-        private void DroppingItemsByPriority()
+        private void ThrowingAwayItemsByPriority()
         {
-            ThrowingProductsWithFeatures("Dairy", 3);
-            if (SpaceLeftOnFridge() < requiredSpace)
+            int freeSpaceByThrowing = 0;
+            freeSpaceByThrowing = CheckFreeSpaceWithProductsFeatures("Dairy", 3);
+            freeSpaceByThrowing += CheckFreeSpaceWithProductsFeatures("Meat", 7);
+            freeSpaceByThrowing += CheckFreeSpaceWithProductsFeatures("Parve", 2);
+
+            if(freeSpaceByThrowing < requiredSpace)
             {
-                //ThrowingProductsWithFeatures();
+                Console.WriteLine("There is not enough space in the refrigerator for new items. Some items are not yet expired and were not removed.");
             }
-            if (SpaceLeftOnFridge() < requiredSpace)
+            else
             {
-                //ThrowingProductsWithFeatures();
+                ThrowingAwayProductsWithFeatures("Dairy", 3);
+                if (SpaceLeftOnFridge() < requiredSpace)
+                {
+                    ThrowingAwayProductsWithFeatures("Meat", 7);
+                }
+                if (SpaceLeftOnFridge() < requiredSpace)
+                {
+                    ThrowingAwayProductsWithFeatures("Parve", 2);
+                }
             }
         }
 
-        private void ThrowingProductsWithFeatures(String kosher, int numberDaysUntilExpiration)
+        private int CheckFreeSpaceWithProductsFeatures(String kosher, int numberDaysUntilExpiration)
+        {
+            int freeSpace = 0;
+            foreach (var shelf in _shelves)
+            {
+                foreach (var item in shelf._items)
+                {
+                    if (item._kosher == kosher && (item._expiryDate - DateTime.Today).Days < numberDaysUntilExpiration)
+                    {
+                        freeSpace += item._spaceItem;
+                    }
+                }
+            }
+            return freeSpace;
+        }
+        
+        private void ThrowingAwayProductsWithFeatures(String kosher, int numberDaysUntilExpiration)
         {
             foreach (var shelf in SortShelvesByFreeSpace())
             {
@@ -215,13 +246,12 @@ namespace RefrigeratorEx
                     if (item._kosher == kosher && (item._expiryDate - DateTime.Today).Days < numberDaysUntilExpiration)
                     {
                         shelf._items.Remove(item);
-                        Console.WriteLine($"Item '{item._name}' (dairy) has expired and has been removed from Shelf {shelf._floorNumber}.");
+                        Console.WriteLine($"Item '{item._name}' ('{kosher}') will expire in a few days and has been removed from the shelf {shelf._floorNumber}.");
                     }
                 }
             }
         }
+        
 
     }
-
-
 }
