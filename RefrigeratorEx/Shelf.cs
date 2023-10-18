@@ -6,7 +6,7 @@ namespace RefrigeratorEx
 {
     class Shelf
     {
-        const int basicSpaceShelf = 30;
+        const int basicSpaceShelf = 20;
 
         public static int IdCounter = 1;
         public int _identifier { get; }
@@ -15,7 +15,7 @@ namespace RefrigeratorEx
         public List<Item> _items { get; }
 
 
-        public Shelf(int floorNumber, int currentSpaceShelf, List<Item> items)
+        public Shelf(int floorNumber, List<Item> items)
         {
             _identifier = IdCounter++;
             _floorNumber = floorNumber;
@@ -29,15 +29,16 @@ namespace RefrigeratorEx
             sb.AppendLine($"Identifier: {_identifier}");
             sb.AppendLine($"Floor number: {_floorNumber}");
             sb.AppendLine($"The space left on the shelf: {_currentSpaceShelf}");
-            sb.AppendLine("Names:");
+            sb.AppendLine("Items:");
             foreach (var item in _items)
             {
-                sb.AppendLine($"- Name of item: {item._name}");
+                sb.AppendLine($"Item: {item}");
             }
 
             return sb.ToString();
         }
 
+        
         public int SpaceLeftOnShelf()
         {
             int spaceItemsShelf = 0;
@@ -48,6 +49,7 @@ namespace RefrigeratorEx
             _currentSpaceShelf -= spaceItemsShelf;
             return _currentSpaceShelf;
         }
+        
 
     }
 }

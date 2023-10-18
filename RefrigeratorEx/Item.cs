@@ -6,18 +6,20 @@ namespace RefrigeratorEx
 {
     class Item
     {
-        public enum KosherType { Dairy, Meat, Parve}
+        public enum Type { Food, Drink }
+        public enum Kosher { Dairy, Meat, Parve}
+
         public static int IdCounter = 1;
         public int _identifier { get; }
         public String _name { get; }
         private int _shelfFloorItem;
-        public bool _type { get; } // food or drink
-        public String _kosher { get; }  // Dairy, Meat or Parve
+        public Type _type { get; }
+        public Kosher _kosher { get; }
         public DateTime _expiryDate { get; }
         public int _spaceItem { get; }
 
 
-        public Item(String name, int shelfFloorItem, bool type, String kosher, DateTime expiryDate, int spaceItem)
+        public Item(String name, int shelfFloorItem, Type type, Kosher kosher, DateTime expiryDate, int spaceItem)
         {
             _identifier = IdCounter++;
             _name = name;
