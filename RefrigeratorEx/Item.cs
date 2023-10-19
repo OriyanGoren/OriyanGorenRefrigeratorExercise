@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace RefrigeratorEx
@@ -12,7 +11,7 @@ namespace RefrigeratorEx
         public static int IdCounter = 0;
         public int _identifier { get; }
         public String _name { get; }
-        public int _shelfNumberOfItem { get; }
+        public int _shelfNumberOfItem { get; set; }
         public Type _type { get; }
         public Kosher _kosher { get; }
         public DateTime _expiryDate { get; }
@@ -23,7 +22,6 @@ namespace RefrigeratorEx
         {
             _identifier = IdCounter++;
             _name = name;
-            //_shelfNumberOfItem
             _type = type;
             _kosher = kosher;
             _expiryDate = expiryDate;
@@ -35,7 +33,7 @@ namespace RefrigeratorEx
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Product ID: {_identifier}");
             sb.AppendLine($"Name: {_name}");
-            //sb.AppendLine($"Floor of shelf that the item is on: {_shelfFloorItem}");
+            sb.AppendLine($"Number of shelf that the item is on: {_shelfNumberOfItem}");
             sb.AppendLine($"Type of food: {_type}");
             sb.AppendLine($"Kosher: {_kosher}");
             sb.AppendLine($"Expiry date: {_expiryDate}");
@@ -43,6 +41,5 @@ namespace RefrigeratorEx
 
             return sb.ToString();
         }
-
     }
 }

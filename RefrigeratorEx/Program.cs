@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Globalization;
 
@@ -11,23 +10,30 @@ namespace RefrigeratorEx
         static void Main(string[] args)
         {
             Program program = new Program();
-            Refrigerator refrigerator = new Refrigerator("Samsung Family Hub", "Black", 5);
-            program.DataInitialize(refrigerator);
-            program.MenuOfRefrigeratorGame(refrigerator);
+            Refrigerator refrigerator1 = new Refrigerator("Samsung Family Hub", "Black", 4);
+            Refrigerator refrigerator2 = new Refrigerator("Samsung Family Hub", "Black", 4);
+            program.DataInitialize(refrigerator1, refrigerator2);
+            program.MenuOfRefrigeratorGame(refrigerator1);
         }
 
-        public void DataInitialize(Refrigerator refrigerator)
+        public void DataInitialize(Refrigerator refrigerator1, Refrigerator refrigerator2)
         {
-            Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 15), 5);
-            Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 23), 10);
-            Item item3 = new Item("Chicken", Item.Type.Food, Item.Kosher.Meat, new DateTime(2023, 10, 17), 12);
-            Item item4 = new Item("Fish", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 25), 8);
-            Item item5 = new Item("Pasta", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 23), 15);
-            refrigerator.PutItemToFridge(item1);
-            refrigerator.PutItemToFridge(item2);
-            refrigerator.PutItemToFridge(item3);
-            refrigerator.PutItemToFridge(item4);
-            refrigerator.PutItemToFridge(item5);
+            Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 15), 7);
+            Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 20), 14);
+            Item item3 = new Item("Chicken", Item.Type.Food, Item.Kosher.Meat, new DateTime(2023, 10, 21), 13);
+            Item item4 = new Item("Fish", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 22), 8);
+            Item item5 = new Item("Pasta", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 20), 15);
+            Item item6 = new Item("Rice", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 23), 10);
+            Item item7 = new Item("Juice", Item.Type.Drink, Item.Kosher.Parve, new DateTime(2023, 10, 24), 8);
+            Item item8 = new Item("Bean", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 25), 8);
+            refrigerator1.PutItemToFridge(item1);
+            refrigerator1.PutItemToFridge(item2);
+            refrigerator1.PutItemToFridge(item3);
+            refrigerator1.PutItemToFridge(item4);
+            refrigerator1.PutItemToFridge(item5);
+            refrigerator2.PutItemToFridge(item6);
+            refrigerator2.PutItemToFridge(item7);
+            refrigerator2.PutItemToFridge(item8);
         }
 
         private void MenuOfRefrigeratorGame(Refrigerator refrigerator)
@@ -43,6 +49,7 @@ namespace RefrigeratorEx
 
         private void ShowingButtonsToUser()
         {
+            Console.WriteLine();    //So that the console looks better
             Console.WriteLine("Menu:");
             Console.WriteLine("1: Print all the items inside the refrigerator and all its contents.");
             Console.WriteLine("2: Print remaining space in the fridge");
@@ -138,18 +145,25 @@ namespace RefrigeratorEx
             GetUserInput<Item.Kosher>(ref kosherInput, "Enter kosher type (0 for Dairy, 1 for Meat, 2 for Parve): ");
             GetUserInput<Item.Type>(ref typeInput, "Enter food type (0 for Food, 1 for Drink): ");
             List<Item> foodIWillEat = refrigerator.IWantToEat((Item.Kosher)kosherInput, (Item.Type)typeInput);
-            foreach (var item2 in foodIWillEat)
+            if(foodIWillEat.Count != 0)
             {
-                Console.WriteLine(item2);
+                foreach (var item in foodIWillEat)
+                {
+                    Console.WriteLine(item);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Sorry, but we have no suitable products for the options you entered.");
             }
         }
 
         private void DoOption7(Refrigerator refrigerator)
         {
             List<Item> sortedItems = refrigerator.SortProductsByExpirationDate();
-            foreach (var item3 in sortedItems)
+            foreach (var item in sortedItems)
             {
-                Console.WriteLine(item3);
+                Console.WriteLine(item);
             }
         }
 
@@ -177,15 +191,36 @@ namespace RefrigeratorEx
             string name = "";
             DateTime expiryDate = DateTime.Today;
 
-            Console.WriteLine("Enter item name:");
-            name = Console.ReadLine();
-            GetUserInput<Item.Kosher>(ref kosher, "Enter kosher type (0 for Dairy, 1 for Meat, 2 for Parve): ");
+            CheckName(ref name);
             GetUserInput<Item.Type>(ref type, "Enter food type (0 for Food, 1 for Drink): ");
+            GetUserInput<Item.Kosher>(ref kosher, "Enter kosher type (0 for Dairy, 1 for Meat, 2 for Parve): ");
             CheckDate(ref expiryDate);
             CheckSpaceOccupied(ref spaceItem);
 
-            Item newItem = new Item(name, (Item.Type)type, (Item.Kosher)kosher, expiryDate, spaceItem);  // If all inputs are valid, create and return the new item
+            Item newItem = new Item(name, (Item.Type)type, (Item.Kosher)kosher, expiryDate, spaceItem);
             return newItem;
+        }
+
+        private void CheckName(ref String name)
+        {
+            while (true)
+            {
+                Console.WriteLine("Enter item name:");
+                name = Console.ReadLine();
+                if (IsAllLetters(name))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input for item name. Please enter letters only.");
+                }
+            }
+        }
+
+        private bool IsAllLetters(string input)
+        {
+            return input.All(char.IsLetter);
         }
 
         private void CheckDate(ref DateTime expiryDate)
@@ -196,7 +231,7 @@ namespace RefrigeratorEx
                 try
                 {
                     expiryDate = DateTime.ParseExact(Console.ReadLine(), "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                    break; // Exit the loop if the date is parsed successfully
+                    break;
                 }
                 catch (FormatException)
                 {
@@ -212,7 +247,6 @@ namespace RefrigeratorEx
             {
                 Console.WriteLine("Enter space occupied by the item:");
                 string spaceInput = Console.ReadLine();
-
                 try
                 {
                     spaceItem = int.Parse(spaceInput);
@@ -220,7 +254,7 @@ namespace RefrigeratorEx
                     {
                         throw new FormatException();
                     }
-                    break; // Exit the loop if space is parsed successfully
+                    break;
                 }
                 catch (FormatException)
                 {
@@ -237,7 +271,7 @@ namespace RefrigeratorEx
                 if (int.TryParse(Console.ReadLine(), out int userInputInt) && Enum.IsDefined(typeof(TEnum), userInputInt))
                 {
                     userInput = userInputInt;
-                    break;  // Exit the loop if valid input is provided
+                    break;
                 }
                 else
                 {
@@ -252,13 +286,5 @@ namespace RefrigeratorEx
             int identifier = Convert.ToInt32(Console.ReadLine());
             return identifier;
         }
-
-        private void InputDataOfFoodToEat(ref int kosherInput, ref int typeInput)
-        {
-            GetUserInput<Item.Kosher>(ref kosherInput, "Enter kosher type (0 for Dairy, 1 for Meat, 2 for Parve): ");
-            GetUserInput<Item.Type>(ref typeInput, "Enter food type (0 for Food, 1 for Drink): ");
-        }
-
     }
 }
-//Item.IdCounter = 1;

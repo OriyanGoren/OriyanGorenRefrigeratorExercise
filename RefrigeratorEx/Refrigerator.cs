@@ -18,7 +18,6 @@ namespace RefrigeratorEx
         private int _numberOfShelves;
         private List<Shelf> _shelves;
 
-
         public Refrigerator(String model, String color, int numberOfShelves)
         {
             _identifier = IdCounter++;
@@ -73,6 +72,7 @@ namespace RefrigeratorEx
                 CheckSpaceOnShelf(shelf, item, ref itemAdded);
                 if (itemAdded)  //The item has been added
                 {
+                    item._shelfNumberOfItem = shelf._shelfNumber;
                     break;
                 }
             }
@@ -179,12 +179,13 @@ namespace RefrigeratorEx
                 }
             }
             List<Item> sortedItems = itemsInFridge.OrderBy(item => item._expiryDate).ToList();
+            
             return sortedItems;
         }
 
         public List<Shelf> SortShelvesByFreeSpace()
         {
-            List<Shelf> sortedShelves = _shelves.OrderByDescending(shelf => shelf.SpaceLeftOnShelf()).ToList();
+            List<Shelf> sortedShelves = _shelves.OrderByDescending(shelf => shelf._currentSpaceShelf).ToList();
             return sortedShelves;
         }
 
@@ -205,7 +206,7 @@ namespace RefrigeratorEx
                 }
                 else
                 {
-                    Console.WriteLine($"Great, we've cleared the fridge of expired products, and now there's at least 20 square centimeters free in the fridge, and you're ready to go shopping.");
+                    Console.WriteLine("Great, we've cleared the fridge of expired products, and now there's at least 20 square centimeters free in the fridge, and you're ready to go shopping.");
                 }
             }
             else
@@ -217,11 +218,25 @@ namespace RefrigeratorEx
         private void ThrowingAwayItemsByPriority()
         {
             int freeSpaceByThrowing = 0;
+            freeSpaceByThrowing = CheckFreeSpace();
+
+            TestsWhichProductsShouldBeThrownAway(freeSpaceByThrowing);
+        }
+
+        private int CheckFreeSpace()
+        {
+            int freeSpaceByThrowing = 0;
+
             freeSpaceByThrowing = CheckFreeSpaceWithProductsFeatures(Item.Kosher.Dairy, 3);
             freeSpaceByThrowing += CheckFreeSpaceWithProductsFeatures(Item.Kosher.Meat, 7);
             freeSpaceByThrowing += CheckFreeSpaceWithProductsFeatures(Item.Kosher.Parve, 2);
 
-            if(freeSpaceByThrowing < requiredSpace)
+            return freeSpaceByThrowing;
+        }
+
+        private void TestsWhichProductsShouldBeThrownAway(int freeSpaceByThrowing)
+        {
+            if (freeSpaceByThrowing < requiredSpace)
             {
                 Console.WriteLine("There is not enough space in the refrigerator for new items. Some items are not yet expired and were not removed.");
             }
@@ -257,13 +272,16 @@ namespace RefrigeratorEx
         
         private void ThrowingAwayProductsWithFeatures(Item.Kosher kosher, int numberDaysUntilExpiration)
         {
-            foreach (var shelf in SortShelvesByFreeSpace())
+            List<Shelf> sortShelves = SortShelvesByFreeSpace();
+            foreach (var shelf in sortShelves)
             {
-                foreach (var item in shelf._items)
+                List<Item> itemsToRemove = new List<Item>(shelf._items);
+                foreach (var item in itemsToRemove)
                 {
                     if (item._kosher == kosher && (item._expiryDate - DateTime.Today).Days < numberDaysUntilExpiration)
                     {
                         shelf._items.Remove(item);
+                        shelf._currentSpaceShelf += item._spaceItem;
                         Console.WriteLine($"Item '{item._name}' ('{kosher}') will expire in a few days and has been removed from the shelf {shelf._shelfNumber}.");
                     }
                 }

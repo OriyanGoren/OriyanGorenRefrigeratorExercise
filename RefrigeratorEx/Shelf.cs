@@ -6,14 +6,13 @@ namespace RefrigeratorEx
 {
     class Shelf
     {
-        const int shelfSize = 20;
+        const int shelfSize = 15;
 
         public static int IdCounter = 0;
         public int _identifier { get; }
         public int _shelfNumber { get; }
         public int _currentSpaceShelf { get; set; }
         public List<Item> _items { get; }
-
 
         public Shelf(int shelfNumber)
         {
