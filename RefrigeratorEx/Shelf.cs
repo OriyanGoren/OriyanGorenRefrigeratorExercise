@@ -6,39 +6,39 @@ namespace RefrigeratorEx
 {
     class Shelf
     {
-        const int basicSpaceShelf = 20;
+        const int shelfSize = 20;
 
-        public static int IdCounter = 1;
+        public static int IdCounter = 0;
         public int _identifier { get; }
-        public int _floorNumber { get; }
-        private int _currentSpaceShelf;
+        public int _shelfNumber { get; }
+        public int _currentSpaceShelf { get; set; }
         public List<Item> _items { get; }
 
 
-        public Shelf(int floorNumber, List<Item> items)
+        public Shelf(int shelfNumber)
         {
             _identifier = IdCounter++;
-            _floorNumber = floorNumber;
-            _currentSpaceShelf = basicSpaceShelf;
-            _items = items;
+            _shelfNumber = shelfNumber;
+            _currentSpaceShelf = shelfSize;
+            _items = new List<Item>();
         }
 
-        public override string ToString()
+        public override String ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Identifier: {_identifier}");
-            sb.AppendLine($"Floor number: {_floorNumber}");
-            sb.AppendLine($"The space left on the shelf: {_currentSpaceShelf}");
+            sb.AppendLine($"Shelf ID: {_identifier}");
+            sb.AppendLine($"Shelf number: {_shelfNumber}");
+            sb.AppendLine($"The basic size of the shelf: {shelfSize}");
+            sb.AppendLine($"The current free space on the shelf: {_currentSpaceShelf}");
             sb.AppendLine("Items:");
             foreach (var item in _items)
             {
-                sb.AppendLine($"Item: {item}");
+                sb.AppendLine(item.ToString());
             }
 
             return sb.ToString();
         }
 
-        
         public int SpaceLeftOnShelf()
         {
             int spaceItemsShelf = 0;
@@ -49,7 +49,5 @@ namespace RefrigeratorEx
             _currentSpaceShelf -= spaceItemsShelf;
             return _currentSpaceShelf;
         }
-        
-
     }
 }

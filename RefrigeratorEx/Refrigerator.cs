@@ -7,11 +7,10 @@ namespace RefrigeratorEx
 {
     class Refrigerator
     {
-        const int shelfSize = 20;
         const int requiredSpace = 20;
         DateTime today = DateTime.Today;
 
-        public static int IdCounter = 1;
+        public static int IdCounter = 0;
         public static List<Refrigerator> refrigerators = new List<Refrigerator>();
         public int _identifier { get; }
         private String _model;
@@ -20,42 +19,50 @@ namespace RefrigeratorEx
         private List<Shelf> _shelves;
 
 
-        public Refrigerator(String model, String color, int numberOfShelves, List<Shelf> shelves)
+        public Refrigerator(String model, String color, int numberOfShelves)
         {
             _identifier = IdCounter++;
             _model = model;
             _color = color;
             _numberOfShelves = numberOfShelves;
-            _shelves = shelves;
+            _shelves = new List<Shelf>();
+            for(int index = 0; index < _numberOfShelves; index++)
+            {
+                AddShelfToFridge(index);
+            }
             refrigerators.Add(this);
         }
 
-        public Refrigerator() { }
+        private void AddShelfToFridge(int shelfNumber)
+        {
+            Shelf shelf = new Shelf(shelfNumber);
+            _shelves.Add(shelf);
+        }
 
-        public string ToString()
+        public override String ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Identifier: {_identifier}");
+            sb.AppendLine($"Refrigerator ID: {_identifier}");
             sb.AppendLine($"Model: {_model}");
             sb.AppendLine($"Color: {_color}");
             sb.AppendLine($"Number of shelves: {_numberOfShelves}");
             sb.AppendLine("Shelves:");
             foreach (var shelf in _shelves)
             {
-                sb.AppendLine($"Shelf: {shelf}");
+                sb.AppendLine(shelf.ToString());
             }
 
             return sb.ToString();
         }
 
-        public int SpaceLeftOnFridge()
+        public int FreeSpaceInFridge()
         {
-            int spaceLeftFridge = 0;
+            int freeSpaceInFridge = 0;
             foreach (var shelf in _shelves)
             {
-                spaceLeftFridge += shelf.SpaceLeftOnShelf();
+                freeSpaceInFridge += shelf._currentSpaceShelf;
             }
-            return spaceLeftFridge;
+            return freeSpaceInFridge;
         }
 
         public void PutItemToFridge(Item item)
@@ -77,10 +84,11 @@ namespace RefrigeratorEx
 
         private void CheckSpaceOnShelf(Shelf shelf, Item item, ref bool itemAdded)
         {
-            if (shelf.SpaceLeftOnShelf() >= item._spaceItem)
+            if (shelf._currentSpaceShelf >= item._spaceItem)
             {
                 shelf._items.Add(item);
-                Console.WriteLine($"Item '{item._name}' added to Shelf {shelf._floorNumber} in the refrigerator.");
+                shelf._currentSpaceShelf -= item._spaceItem;
+                Console.WriteLine($"Item '{item._name}' added to Shelf {shelf._shelfNumber} in the refrigerator.");
                 itemAdded = true;
             }
         }
@@ -93,7 +101,7 @@ namespace RefrigeratorEx
                 ItemRemove(shelf, ref removedItem, itemId);
                 if (removedItem != null)    //The item is in the fridge and has been removed
                 {
-                    Console.WriteLine($"Item with ID '{itemId}' removed from Shelf {shelf._floorNumber} in the refrigerator.");
+                    Console.WriteLine($"Item with ID '{itemId}' removed from Shelf {shelf._shelfNumber} in the refrigerator.");
                     return removedItem;
                 }
             }
@@ -107,6 +115,7 @@ namespace RefrigeratorEx
             if (itemToRemove != null)
             {
                 shelf._items.Remove(itemToRemove);
+                shelf._currentSpaceShelf += itemToRemove._spaceItem;
                 removedItem = itemToRemove;
             }
         }
@@ -137,7 +146,8 @@ namespace RefrigeratorEx
             foreach (var itemToRemove in itemsToRemove)
             {
                 shelf._items.Remove(itemToRemove);
-                Console.WriteLine($"Item '{itemToRemove._name}' has expired and has been removed from Shelf {shelf._floorNumber}.");
+                shelf._currentSpaceShelf += itemToRemove._spaceItem;
+                Console.WriteLine($"Item '{itemToRemove._name}' has expired and has been removed from Shelf {shelf._shelfNumber}.");
             }
         }
 
@@ -178,19 +188,18 @@ namespace RefrigeratorEx
             return sortedShelves;
         }
 
-        //static??
-        public List<Refrigerator> SortRefrigeratorsByFreeSpace()
+        public static List<Refrigerator> SortRefrigeratorsByFreeSpace()
         {
-            List<Refrigerator> sortedRefrigerators = refrigerators.OrderByDescending(refrigerator => refrigerator.SpaceLeftOnFridge()).ToList();
+            List<Refrigerator> sortedRefrigerators = refrigerators.OrderByDescending(refrigerator => refrigerator.FreeSpaceInFridge()).ToList();
             return sortedRefrigerators;
         }
 
         public void GettingReadyForShopping()
         {
-            if (SpaceLeftOnFridge() < requiredSpace)
+            if (FreeSpaceInFridge() < requiredSpace)
             {
                 CleaningTheFridge();
-                if (SpaceLeftOnFridge() < requiredSpace)
+                if (FreeSpaceInFridge() < requiredSpace)
                 {
                     ThrowingAwayItemsByPriority();
                 }
@@ -219,11 +228,11 @@ namespace RefrigeratorEx
             else
             {
                 ThrowingAwayProductsWithFeatures(Item.Kosher.Dairy, 3);
-                if (SpaceLeftOnFridge() < requiredSpace)
+                if (FreeSpaceInFridge() < requiredSpace)
                 {
                     ThrowingAwayProductsWithFeatures(Item.Kosher.Meat, 7);
                 }
-                if (SpaceLeftOnFridge() < requiredSpace)
+                if (FreeSpaceInFridge() < requiredSpace)
                 {
                     ThrowingAwayProductsWithFeatures(Item.Kosher.Parve, 2);
                 }
@@ -255,7 +264,7 @@ namespace RefrigeratorEx
                     if (item._kosher == kosher && (item._expiryDate - DateTime.Today).Days < numberDaysUntilExpiration)
                     {
                         shelf._items.Remove(item);
-                        Console.WriteLine($"Item '{item._name}' ('{kosher}') will expire in a few days and has been removed from the shelf {shelf._floorNumber}.");
+                        Console.WriteLine($"Item '{item._name}' ('{kosher}') will expire in a few days and has been removed from the shelf {shelf._shelfNumber}.");
                     }
                 }
             }
