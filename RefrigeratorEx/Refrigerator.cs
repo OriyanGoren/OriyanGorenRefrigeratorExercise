@@ -10,9 +10,8 @@ namespace RefrigeratorEx
         const int potentialFreeSpace = 20;
         DateTime today = DateTime.Today;
 
-        public static int IdCounter = 0;
+        private Guid _identifier;
         public static List<Refrigerator> refrigerators = new List<Refrigerator>();
-        private int _identifier;
         private String _model;
         private String _color;
         private int _numberOfShelves;
@@ -20,7 +19,7 @@ namespace RefrigeratorEx
 
         public Refrigerator(String model, String color, int numberOfShelves)
         {
-            _identifier = IdCounter++;
+            _identifier = Guid.NewGuid();
             _model = model;
             _color = color;
             _numberOfShelves = numberOfShelves;
@@ -96,13 +95,13 @@ namespace RefrigeratorEx
             return false;
         }
 
-        public Item RemovingItemFromFridge(int itemId)
+        public Item RemoveItemFromFridge(Guid itemId)
         {
             Item removedItem = null;
             foreach (var shelf in _shelves)
             {
                 removedItem = RemoveFromShelf(shelf, itemId);
-                if (removedItem != null)    //The item is in the fridge and has been removed
+                if (removedItem != null)
                 {
                     Console.WriteLine($"Item with ID '{itemId}' removed from Shelf {shelf.Number} in the refrigerator.");
                     return removedItem;
@@ -113,7 +112,7 @@ namespace RefrigeratorEx
             return removedItem;
         }
 
-        private Item RemoveFromShelf(Shelf shelf, int itemId)
+        private Item RemoveFromShelf(Shelf shelf, Guid itemId)
         {
             Item itemToRemove = shelf.Items.Find(item => item.Identifier == itemId);
             if (itemToRemove != null)

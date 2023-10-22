@@ -8,8 +8,7 @@ namespace RefrigeratorEx
         public enum Type { Food, Drink }
         public enum Kosher { Dairy, Meat, Parve}
 
-        public static int IdCounter = 0;
-        public int Identifier { get; }
+        public Guid Identifier { get; }
         public String Name { get; }
         public int ShelfNumber { get; set; }
         public Type TypeProduct { get; }
@@ -20,7 +19,7 @@ namespace RefrigeratorEx
 
         public Item(String name, Type type, Kosher kosher, DateTime expiryDate, int space)
         {
-            Identifier = IdCounter++;
+            Identifier = Guid.NewGuid();
             Name = name;
             TypeProduct = type;
             KosherProduct = kosher;

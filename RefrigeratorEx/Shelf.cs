@@ -8,15 +8,14 @@ namespace RefrigeratorEx
     {
         const int shelfSize = 15;
 
-        public static int IdCounter = 0;
-        private int _identifier;
+        private Guid _identifier;
         public int Number { get; }
         public int FreeSpace { get; set; }
         public List<Item> Items { get; }
 
         public Shelf(int shelfNumber)
         {
-            _identifier = IdCounter++;
+            _identifier = Guid.NewGuid();
             Number = shelfNumber;
             FreeSpace = shelfSize;
             Items = new List<Item>();

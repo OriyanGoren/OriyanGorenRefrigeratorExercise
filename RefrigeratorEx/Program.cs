@@ -96,8 +96,8 @@ namespace RefrigeratorEx
                     refrigerator.AddItem(item1);
                     break;
                 case 4:
-                    int ID = GetItemIdForRemoval();
-                    refrigerator.RemovingItemFromFridge(ID);
+                    Guid ID = GetItemIdForRemoval();
+                    refrigerator.RemoveItemFromFridge(ID);
                     break;
                 case 5:
                     refrigerator.CleanTheFridge();
@@ -281,12 +281,19 @@ namespace RefrigeratorEx
             }
         }
 
-        private int GetItemIdForRemoval()
+        private Guid GetItemIdForRemoval()
         {
-            Console.WriteLine("Enter an ID number:");
-            int identifier = Convert.ToInt32(Console.ReadLine());
-
-            return identifier;
+            Console.WriteLine("Enter a GUID:");
+            Guid identifier;
+            if (Guid.TryParse(Console.ReadLine(), out identifier))
+            {
+                return identifier;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid GUID.");
+                return Guid.Empty;
+            }
         }
     }
 }
