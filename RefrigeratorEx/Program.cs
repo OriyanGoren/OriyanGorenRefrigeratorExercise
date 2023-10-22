@@ -13,43 +13,43 @@ namespace RefrigeratorEx
             Refrigerator refrigerator1 = new Refrigerator("Samsung Family Hub", "Black", 4);
             Refrigerator refrigerator2 = new Refrigerator("Samsung Family Hub", "Black", 4);
             program.DataInitialize(refrigerator1, refrigerator2);
-            program.MenuOfRefrigeratorGame(refrigerator1);
+            program.RunRefrigeratorGame(refrigerator1);
         }
 
         public void DataInitialize(Refrigerator refrigerator1, Refrigerator refrigerator2)
         {
-            Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 15), 7);
-            Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 20), 14);
-            Item item3 = new Item("Chicken", Item.Type.Food, Item.Kosher.Meat, new DateTime(2023, 10, 21), 13);
-            Item item4 = new Item("Fish", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 22), 8);
-            Item item5 = new Item("Pasta", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 20), 15);
+            Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 21), 7);
+            Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 23), 14);
+            Item item3 = new Item("Chicken", Item.Type.Food, Item.Kosher.Meat, new DateTime(2023, 10, 24), 13);
+            Item item4 = new Item("Fish", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 25), 8);
+            Item item5 = new Item("Pasta", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 26), 15);
             Item item6 = new Item("Rice", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 23), 10);
-            Item item7 = new Item("Juice", Item.Type.Drink, Item.Kosher.Parve, new DateTime(2023, 10, 24), 8);
-            Item item8 = new Item("Bean", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 25), 8);
-            refrigerator1.PutItemToFridge(item1);
-            refrigerator1.PutItemToFridge(item2);
-            refrigerator1.PutItemToFridge(item3);
-            refrigerator1.PutItemToFridge(item4);
-            refrigerator1.PutItemToFridge(item5);
-            refrigerator2.PutItemToFridge(item6);
-            refrigerator2.PutItemToFridge(item7);
-            refrigerator2.PutItemToFridge(item8);
+            Item item7 = new Item("Juice", Item.Type.Drink, Item.Kosher.Parve, new DateTime(2023, 10, 23), 8);
+            Item item8 = new Item("Bean", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 23), 8);
+            refrigerator1.AddItem(item1);
+            refrigerator1.AddItem(item2);
+            refrigerator1.AddItem(item3);
+            refrigerator1.AddItem(item4);
+            refrigerator1.AddItem(item5);
+            refrigerator2.AddItem(item6);
+            refrigerator2.AddItem(item7);
+            refrigerator2.AddItem(item8);
         }
 
-        private void MenuOfRefrigeratorGame(Refrigerator refrigerator)
+        private void RunRefrigeratorGame(Refrigerator refrigerator)
         {
             bool isRunning = true;
             while (isRunning)
             {
-                ShowingButtonsToUser();
-                PlayingGameByUser(ref isRunning, refrigerator);
+                PrintMenuOptions();
+                ProcessUserChoiceAndPlayGame(ref isRunning, refrigerator);
             }
             Console.WriteLine("System shut down.");
         }
 
-        private void ShowingButtonsToUser()
+        private void PrintMenuOptions()
         {
-            Console.WriteLine();    //So that the console looks better
+            Console.WriteLine();
             Console.WriteLine("Menu:");
             Console.WriteLine("1: Print all the items inside the refrigerator and all its contents.");
             Console.WriteLine("2: Print remaining space in the fridge");
@@ -64,7 +64,7 @@ namespace RefrigeratorEx
             Console.WriteLine("100: Shutdown");
         }
 
-        private void PlayingGameByUser(ref bool isRunning, Refrigerator refrigerator)
+        private void ProcessUserChoiceAndPlayGame(ref bool isRunning, Refrigerator refrigerator)
         {
             int choice;
             Console.WriteLine();
@@ -72,7 +72,7 @@ namespace RefrigeratorEx
             if (int.TryParse(Console.ReadLine(), out choice))
             {
                 Console.WriteLine();
-                OptionsInGame(choice, ref isRunning, refrigerator);
+                ExecuteGameOption(choice, ref isRunning, refrigerator);
             }
             else
             {
@@ -80,39 +80,39 @@ namespace RefrigeratorEx
             }
         }
 
-        private void OptionsInGame(int choice, ref bool isRunning, Refrigerator refrigerator)
+        private void ExecuteGameOption(int choice, ref bool isRunning, Refrigerator refrigerator)
         {
             switch (choice)
             {
                 case 1:
-                    DoOption1(refrigerator);
+                    DisplayFridgeContents(refrigerator);
                     break;
                 case 2:
-                    int FreeSpaceInFridge = refrigerator.FreeSpaceInFridge();
+                    int FreeSpaceInFridge = refrigerator.GetFreeSpaceInFridge();
                     Console.WriteLine($"Free space in the fridge: '{FreeSpaceInFridge}' square centimete");
                     break;
                 case 3:
-                    Item item1 = InputDataOfItemInsertion();
-                    refrigerator.PutItemToFridge(item1);
+                    Item item1 = GatherNewItemDetailsFromUser();
+                    refrigerator.AddItem(item1);
                     break;
                 case 4:
-                    int ID = InputDataOfItemTakeOut();
+                    int ID = GetItemIdForRemoval();
                     refrigerator.RemovingItemFromFridge(ID);
                     break;
                 case 5:
-                    refrigerator.CleaningTheFridge();
+                    refrigerator.CleanTheFridge();
                     break;
                 case 6:
-                    DoOption6(refrigerator);
+                    SearchForFoodInFridge(refrigerator);
                     break;
                 case 7:
-                    DoOption7(refrigerator);
+                    DisplayItemsSortedByExpirationDate(refrigerator);
                     break;
                 case 8:
-                    DoOption8(refrigerator);
+                    DisplayShelvesSortedByFreeSpace(refrigerator);
                     break;
                 case 9:
-                    DoOption9(refrigerator);
+                    DisplayFridgesSortedByFreeSpace(refrigerator);
                     break;
                 case 10:
                     refrigerator.GettingReadyForShopping();
@@ -126,7 +126,7 @@ namespace RefrigeratorEx
             }
         }
 
-        private void DoOption1(Refrigerator refrigerator)
+        private void DisplayFridgeContents(Refrigerator refrigerator)
         {
             if (refrigerator.ToString() != null)
             {
@@ -138,7 +138,7 @@ namespace RefrigeratorEx
             }
         }
 
-        private void DoOption6(Refrigerator refrigerator)
+        private void SearchForFoodInFridge(Refrigerator refrigerator)
         {
             int kosherInput = 0;
             int typeInput = 0;
@@ -158,16 +158,16 @@ namespace RefrigeratorEx
             }
         }
 
-        private void DoOption7(Refrigerator refrigerator)
+        private void DisplayItemsSortedByExpirationDate(Refrigerator refrigerator)
         {
-            List<Item> sortedItems = refrigerator.SortProductsByExpirationDate();
+            List<Item> sortedItems = refrigerator.SortItemsByExpirationDate();
             foreach (var item in sortedItems)
             {
                 Console.WriteLine(item);
             }
         }
 
-        private void DoOption8(Refrigerator refrigerator)
+        private void DisplayShelvesSortedByFreeSpace(Refrigerator refrigerator)
         {
             List<Shelf> sortedShelves = refrigerator.SortShelvesByFreeSpace();
             foreach (var shelf in sortedShelves)
@@ -176,7 +176,7 @@ namespace RefrigeratorEx
             }
         }
 
-        private void DoOption9(Refrigerator refrigerator)
+        private void DisplayFridgesSortedByFreeSpace(Refrigerator refrigerator)
         {
             List<Refrigerator> sortedFridges = Refrigerator.SortRefrigeratorsByFreeSpace();
             foreach (var fridge in sortedFridges)
@@ -185,9 +185,9 @@ namespace RefrigeratorEx
             }
         }
 
-        private Item InputDataOfItemInsertion()
+        private Item GatherNewItemDetailsFromUser()
         {
-            int kosher = 0, type = 0, spaceItem = 0; ;
+            int kosher = 0, type = 0, spaceItem = 0;
             string name = "";
             DateTime expiryDate = DateTime.Today;
 
@@ -198,6 +198,7 @@ namespace RefrigeratorEx
             CheckSpaceOccupied(ref spaceItem);
 
             Item newItem = new Item(name, (Item.Type)type, (Item.Kosher)kosher, expiryDate, spaceItem);
+
             return newItem;
         }
 
@@ -280,10 +281,11 @@ namespace RefrigeratorEx
             }
         }
 
-        private int InputDataOfItemTakeOut()
+        private int GetItemIdForRemoval()
         {
             Console.WriteLine("Enter an ID number:");
             int identifier = Convert.ToInt32(Console.ReadLine());
+
             return identifier;
         }
     }

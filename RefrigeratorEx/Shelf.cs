@@ -9,44 +9,33 @@ namespace RefrigeratorEx
         const int shelfSize = 15;
 
         public static int IdCounter = 0;
-        public int _identifier { get; }
-        public int _shelfNumber { get; }
-        public int _currentSpaceShelf { get; set; }
-        public List<Item> _items { get; }
+        private int _identifier;
+        public int Number { get; }
+        public int FreeSpace { get; set; }
+        public List<Item> Items { get; }
 
         public Shelf(int shelfNumber)
         {
             _identifier = IdCounter++;
-            _shelfNumber = shelfNumber;
-            _currentSpaceShelf = shelfSize;
-            _items = new List<Item>();
+            Number = shelfNumber;
+            FreeSpace = shelfSize;
+            Items = new List<Item>();
         }
 
         public override String ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Shelf ID: {_identifier}");
-            sb.AppendLine($"Shelf number: {_shelfNumber}");
+            sb.AppendLine($"Shelf number: {Number}");
             sb.AppendLine($"The basic size of the shelf: {shelfSize}");
-            sb.AppendLine($"The current free space on the shelf: {_currentSpaceShelf}");
+            sb.AppendLine($"Free space: {FreeSpace}");
             sb.AppendLine("Items:");
-            foreach (var item in _items)
+            foreach (var item in Items)
             {
                 sb.AppendLine(item.ToString());
             }
 
             return sb.ToString();
-        }
-
-        public int SpaceLeftOnShelf()
-        {
-            int spaceItemsShelf = 0;
-            foreach (var item in _items)
-            {
-                spaceItemsShelf += item._spaceItem;
-            }
-            _currentSpaceShelf -= spaceItemsShelf;
-            return _currentSpaceShelf;
         }
     }
 }

@@ -9,35 +9,35 @@ namespace RefrigeratorEx
         public enum Kosher { Dairy, Meat, Parve}
 
         public static int IdCounter = 0;
-        public int _identifier { get; }
-        public String _name { get; }
-        public int _shelfNumberOfItem { get; set; }
-        public Type _type { get; }
-        public Kosher _kosher { get; }
-        public DateTime _expiryDate { get; }
-        public int _spaceItem { get; }
+        public int Identifier { get; }
+        public String Name { get; }
+        public int ShelfNumber { get; set; }
+        public Type TypeProduct { get; }
+        public Kosher KosherProduct { get; }
+        public DateTime ExpiryDate { get; }
+        public int Space { get; }
 
 
-        public Item(String name, Type type, Kosher kosher, DateTime expiryDate, int spaceItem)
+        public Item(String name, Type type, Kosher kosher, DateTime expiryDate, int space)
         {
-            _identifier = IdCounter++;
-            _name = name;
-            _type = type;
-            _kosher = kosher;
-            _expiryDate = expiryDate;
-            _spaceItem = spaceItem;
+            Identifier = IdCounter++;
+            Name = name;
+            TypeProduct = type;
+            KosherProduct = kosher;
+            ExpiryDate = expiryDate;
+            Space = space;
         }
 
         public override String ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Product ID: {_identifier}");
-            sb.AppendLine($"Name: {_name}");
-            sb.AppendLine($"Number of shelf that the item is on: {_shelfNumberOfItem}");
-            sb.AppendLine($"Type of food: {_type}");
-            sb.AppendLine($"Kosher: {_kosher}");
-            sb.AppendLine($"Expiry date: {_expiryDate}");
-            sb.AppendLine($"The space the item occupies: {_spaceItem}");
+            sb.AppendLine($"Product ID: {Identifier}");
+            sb.AppendLine($"Name: {Name}");
+            sb.AppendLine($"Shelf number: {ShelfNumber}");
+            sb.AppendLine($"Type of food: {TypeProduct}");
+            sb.AppendLine($"Kosher: {KosherProduct}");
+            sb.AppendLine($"Expiry date: {ExpiryDate}");
+            sb.AppendLine($"The space the item occupies: {Space}");
 
             return sb.ToString();
         }
