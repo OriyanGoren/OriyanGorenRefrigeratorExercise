@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 
 namespace RefrigeratorEx
@@ -16,7 +17,6 @@ namespace RefrigeratorEx
         public DateTime ExpiryDate { get; }
         public int Space { get; }
 
-
         public Item(String name, Type type, Kosher kosher, DateTime expiryDate, int space)
         {
             Identifier = Guid.NewGuid();
@@ -27,7 +27,7 @@ namespace RefrigeratorEx
             Space = space;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Product ID: {Identifier}");
@@ -35,7 +35,7 @@ namespace RefrigeratorEx
             sb.AppendLine($"Shelf number: {ShelfNumber}");
             sb.AppendLine($"Type of food: {TypeProduct}");
             sb.AppendLine($"Kosher: {KosherProduct}");
-            sb.AppendLine($"Expiry date: {ExpiryDate}");
+            sb.AppendLine($"Expiry date: {ExpiryDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}");
             sb.AppendLine($"The space the item occupies: {Space}");
 
             return sb.ToString();

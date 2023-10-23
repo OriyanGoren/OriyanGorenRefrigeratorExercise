@@ -91,6 +91,7 @@ namespace RefrigeratorEx
 
                 return true;
             }
+
             return false;
         }
 
@@ -119,6 +120,7 @@ namespace RefrigeratorEx
                 shelf.Items.Remove(itemToRemove);
                 shelf.FreeSpace += itemToRemove.Space;
             }
+
             return itemToRemove;
         }
 
@@ -142,6 +144,7 @@ namespace RefrigeratorEx
                     itemsToRemove.Add(item);
                 }
             }
+
             return itemsToRemove;
         }
 
@@ -255,7 +258,6 @@ namespace RefrigeratorEx
         {
             if (GetFreeSpaceInFridge() < Constants.REQUIRED_SPACE)
             {
-                Console.WriteLine($"GetFreeSpaceInFridge: '{GetFreeSpaceInFridge()}'");
                 DiscardItemsWithFeatures(kosherType, requiredSpace);
             }
         }
@@ -304,6 +306,5 @@ namespace RefrigeratorEx
             shelf.FreeSpace += item.Space;
             Console.WriteLine($"Item '{item.Name}' ('{item.KosherProduct}') will expire in a few days and has been removed from the shelf {shelf.Number}.");
         }
-
     }
 }
