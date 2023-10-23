@@ -18,10 +18,10 @@ namespace RefrigeratorEx
 
         public void DataInitialize(Refrigerator refrigerator1, Refrigerator refrigerator2)
         {
-            Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 21), 7);
-            Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 23), 14);
-            Item item3 = new Item("Chicken", Item.Type.Food, Item.Kosher.Meat, new DateTime(2023, 10, 24), 13);
-            Item item4 = new Item("Fish", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 25), 8);
+            Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 26), 7);
+            Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 25), 14);
+            Item item3 = new Item("Chicken", Item.Type.Food, Item.Kosher.Meat, new DateTime(2023, 10, 25), 9);
+            Item item4 = new Item("Fish", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 21), 12);
             Item item5 = new Item("Pasta", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 26), 15);
             Item item6 = new Item("Rice", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 23), 10);
             Item item7 = new Item("Juice", Item.Type.Drink, Item.Kosher.Parve, new DateTime(2023, 10, 23), 8);
@@ -115,7 +115,7 @@ namespace RefrigeratorEx
                     DisplayFridgesSortedByFreeSpace(refrigerator);
                     break;
                 case 10:
-                    refrigerator.GettingReadyForShopping();
+                    refrigerator.PrepareFridgeForShopping();
                     break;
                 case 100:
                     isRunning = false;
