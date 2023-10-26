@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RefrigeratorEx
 {
-    class Shelf
+    public class Shelf
     {
         private Guid _identifier;
         public int Number { get; }

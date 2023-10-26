@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RefrigeratorEx
 {
-    class Refrigerator
+    public class Refrigerator
     {
         DateTime today = DateTime.Today;
 

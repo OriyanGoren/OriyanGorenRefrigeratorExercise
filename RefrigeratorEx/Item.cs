@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RefrigeratorEx
 {
-    class Item
+    public class Item
     {
         public enum Type { Food, Drink }
         public enum Kosher { Dairy, Meat, Parve}
