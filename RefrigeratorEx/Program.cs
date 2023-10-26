@@ -7,6 +7,22 @@ namespace RefrigeratorEx
 {
     class Program
     {
+        private Dictionary<int, Action<Refrigerator>> functions = new Dictionary<int, Action<Refrigerator>>();
+
+        public Program()
+        {
+            functions[1] = DisplayFridgeContents;
+            functions[2] = DisplayFreeSpaceInFridge;
+            functions[3] = AddItemToRefrigerator;
+            functions[4] = RemoveItemFromRefrigerator;
+            functions[5] = CleanRefrigerator;
+            functions[6] = SearchForFoodInFridge;
+            functions[7] = DisplayItemsSortedByExpirationDate;
+            functions[8] = DisplayShelvesSortedByFreeSpace;
+            functions[9] = DisplayFridgesSortedByFreeSpace;
+            functions[10] = PrepareFridgeForShopping;
+        }
+
         static void Main(string[] args)
         {
             try
@@ -25,8 +41,8 @@ namespace RefrigeratorEx
 
         public void DataInitialize(Refrigerator refrigerator1, Refrigerator refrigerator2)
         {
-            Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 26), 7);
-            Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 25), 14);
+            Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 28), 7);
+            Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 28), 14);
             Item item3 = new Item("Chicken", Item.Type.Food, Item.Kosher.Meat, new DateTime(2023, 10, 25), 9);
             Item item4 = new Item("Fish", Item.Type.Food, Item.Kosher.Parve, new DateTime(2023, 10, 21), 12);
             Item item5 = new Item("Pasta", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 26), 5);
@@ -89,47 +105,17 @@ namespace RefrigeratorEx
 
         private void ExecuteGameOption(int choice, ref bool isRunning, Refrigerator refrigerator)
         {
-            switch (choice)
+            if (functions.ContainsKey(choice))
             {
-                case 1:
-                    DisplayFridgeContents(refrigerator);
-                    break;
-                case 2:
-                    int FreeSpaceInFridge = refrigerator.GetFreeSpaceInFridge();
-                    Console.WriteLine($"Free space in the fridge: '{FreeSpaceInFridge}' square centimete");
-                    break;
-                case 3:
-                    Item item1 = GatherNewItemDetailsFromUser();
-                    refrigerator.AddItem(item1);
-                    break;
-                case 4:
-                    Guid ID = GetItemIdForRemoval();
-                    refrigerator.RemoveItemFromFridge(ID);
-                    break;
-                case 5:
-                    refrigerator.CleanTheFridge();
-                    break;
-                case 6:
-                    SearchForFoodInFridge(refrigerator);
-                    break;
-                case 7:
-                    DisplayItemsSortedByExpirationDate(refrigerator);
-                    break;
-                case 8:
-                    DisplayShelvesSortedByFreeSpace(refrigerator);
-                    break;
-                case 9:
-                    DisplayFridgesSortedByFreeSpace(refrigerator);
-                    break;
-                case 10:
-                    refrigerator.PrepareFridgeForShopping();
-                    break;
-                case 100:
-                    isRunning = false;
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice. Please try again.");
-                    break;
+                functions[choice](refrigerator);
+            }
+            else if (choice == 100)
+            {
+                isRunning = false;
+            }
+            else
+            {
+                Console.WriteLine("Invalid choice. Please try again.");
             }
         }
 
@@ -143,6 +129,29 @@ namespace RefrigeratorEx
             {
                 Console.WriteLine("Sorry but there are no items in the fridge yet, so we have nothing to display. To put items in the fridge press 3 please.");
             }
+        }
+
+        private void DisplayFreeSpaceInFridge(Refrigerator refrigerator)
+        {
+            int FreeSpaceInFridge = refrigerator.GetFreeSpaceInFridge();
+            Console.WriteLine($"Free space in the fridge: '{FreeSpaceInFridge}' square centimete");
+        }
+
+        private void AddItemToRefrigerator(Refrigerator refrigerator)
+        {
+            Item item1 = GatherNewItemDetailsFromUser();
+            refrigerator.AddItem(item1);
+        }
+
+        private void RemoveItemFromRefrigerator(Refrigerator refrigerator)
+        {
+            Guid ID = GetItemIdForRemoval();
+            refrigerator.RemoveItemFromFridge(ID);
+        }
+
+        private void CleanRefrigerator(Refrigerator refrigerator)
+        {
+            refrigerator.CleanTheFridge();
         }
 
         private void SearchForFoodInFridge(Refrigerator refrigerator)
@@ -184,6 +193,11 @@ namespace RefrigeratorEx
         {
             List<Refrigerator> sortedFridges = Refrigerator.SortRefrigeratorsByFreeSpace();
             sortedFridges.ForEach(fridge => Console.WriteLine(fridge));
+        }
+
+        private void PrepareFridgeForShopping(Refrigerator refrigerator)
+        {
+            refrigerator.PrepareFridgeForShopping();
         }
 
         private Item GatherNewItemDetailsFromUser()
