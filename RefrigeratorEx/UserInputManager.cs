@@ -83,6 +83,7 @@ namespace RefrigeratorEx
                     Console.WriteLine("Invalid input for space. Please enter a positive integer.");
                 }
             }
+
             return spaceItem;
         }
 
@@ -107,6 +108,7 @@ namespace RefrigeratorEx
                     Console.WriteLine($"Invalid input. Please enter a valid value for {typeof(TEnum).Name}. Please try again.");
                 }
             }
+
             return userInput;
         }
 
@@ -126,8 +128,5 @@ namespace RefrigeratorEx
                 }
             }
         }
-
-
-
     }
 }

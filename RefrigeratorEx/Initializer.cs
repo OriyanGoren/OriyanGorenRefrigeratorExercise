@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RefrigeratorEx
 {
     public class Initializer
     {
-        public static void InitializeData(Refrigerator refrigerator1, Refrigerator refrigerator2)
+        public static void InitializeRefrigerators(Refrigerator refrigerator1, Refrigerator refrigerator2)
         {
             Item item1 = new Item("Milk", Item.Type.Drink, Item.Kosher.Dairy, new DateTime(2023, 10, 28), 7);
             Item item2 = new Item("Pizza", Item.Type.Food, Item.Kosher.Dairy, new DateTime(2023, 10, 28), 14);
@@ -22,6 +23,20 @@ namespace RefrigeratorEx
             refrigerator2.AddItem(item6);
             refrigerator2.AddItem(item7);
             refrigerator2.AddItem(item8);
+        }
+
+        public static void InitializeFunctionsDictionary(Dictionary<int, Action<Refrigerator>> _functions)
+        {
+            _functions[1] = new RefrigeratorManager().DisplayFridgeContents;
+            _functions[2] = new RefrigeratorManager().DisplayFreeSpaceInFridge;
+            _functions[3] = new RefrigeratorManager().AddItemToRefrigerator;
+            _functions[4] = new RefrigeratorManager().RemoveItemFromRefrigerator;
+            _functions[5] = new RefrigeratorManager().CleanRefrigerator;
+            _functions[6] = new RefrigeratorManager().SearchForFoodInFridge;
+            _functions[7] = new SortingManager().DisplayItemsSortedByExpirationDate;
+            _functions[8] = new SortingManager().DisplayShelvesSortedByFreeSpace;
+            _functions[9] = new SortingManager().DisplayFridgesSortedByFreeSpace;
+            _functions[10] = new RefrigeratorManager().PrepareFridgeForShopping;
         }
     }
 }

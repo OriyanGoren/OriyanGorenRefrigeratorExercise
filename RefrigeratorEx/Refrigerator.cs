@@ -223,7 +223,6 @@ namespace RefrigeratorEx
             }
         }
 
-
         private void ThrowItemsByPriority()
         {
             DetermineItemsToDiscardIfNeeded(CheckFreeSpace());
