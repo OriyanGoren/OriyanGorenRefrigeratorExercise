@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Globalization;
 
 namespace RefrigeratorEx
 {
@@ -11,16 +9,16 @@ namespace RefrigeratorEx
 
         public Program()
         {
-            functions[1] = DisplayFridgeContents;
-            functions[2] = DisplayFreeSpaceInFridge;
-            functions[3] = AddItemToRefrigerator;
-            functions[4] = RemoveItemFromRefrigerator;
-            functions[5] = CleanRefrigerator;
-            functions[6] = SearchForFoodInFridge;
-            functions[7] = DisplayItemsSortedByExpirationDate;
-            functions[8] = DisplayShelvesSortedByFreeSpace;
-            functions[9] = DisplayFridgesSortedByFreeSpace;
-            functions[10] = PrepareFridgeForShopping;
+            functions[1] = new RefrigeratorManager().DisplayFridgeContents;
+            functions[2] = new RefrigeratorManager().DisplayFreeSpaceInFridge;
+            functions[3] = new RefrigeratorManager().AddItemToRefrigerator;
+            functions[4] = new RefrigeratorManager().RemoveItemFromRefrigerator;
+            functions[5] = new RefrigeratorManager().CleanRefrigerator;
+            functions[6] = new RefrigeratorManager().SearchForFoodInFridge;
+            functions[7] = new SortingManager().DisplayItemsSortedByExpirationDate;
+            functions[8] = new SortingManager().DisplayShelvesSortedByFreeSpace;
+            functions[9] = new SortingManager().DisplayFridgesSortedByFreeSpace;
+            functions[10] = new RefrigeratorManager().PrepareFridgeForShopping;
         }
 
         static void Main(string[] args)
@@ -96,208 +94,6 @@ namespace RefrigeratorEx
             else
             {
                 Console.WriteLine("Invalid choice. Please try again.");
-            }
-        }
-
-        private void DisplayFridgeContents(Refrigerator refrigerator)
-        {
-            if (refrigerator != null)
-            {
-                Console.WriteLine(refrigerator.ToString());
-            }
-            else
-            {
-                Console.WriteLine("Sorry but there are no items in the fridge yet, so we have nothing to display. To put items in the fridge press 3 please.");
-            }
-        }
-
-        private void DisplayFreeSpaceInFridge(Refrigerator refrigerator)
-        {
-            int FreeSpaceInFridge = refrigerator.GetFreeSpaceInFridge();
-            Console.WriteLine($"Free space in the fridge: '{FreeSpaceInFridge}' square centimete");
-        }
-
-        private void AddItemToRefrigerator(Refrigerator refrigerator)
-        {
-            Item item1 = GatherNewItemDetailsFromUser();
-            refrigerator.AddItem(item1);
-        }
-
-        private void RemoveItemFromRefrigerator(Refrigerator refrigerator)
-        {
-            Guid ID = GetItemIdForRemoval();
-            refrigerator.RemoveItemFromFridge(ID);
-        }
-
-        private void CleanRefrigerator(Refrigerator refrigerator)
-        {
-            refrigerator.CleanTheFridge();
-        }
-
-        private void SearchForFoodInFridge(Refrigerator refrigerator)
-        {
-            int kosherInput, typeInput;
-
-            kosherInput = GetUserInput<Item.Kosher>("Enter kosher type (0 for Dairy, 1 for Meat, 2 for Parve): ");
-            typeInput = GetUserInput<Item.Type>("Enter food type (0 for Food, 1 for Drink): ");
-            List<Item> foodIWillEat = refrigerator.IWantToEat((Item.Kosher)kosherInput, (Item.Type)typeInput);
-            if (foodIWillEat.Count != 0)
-            {
-                foodIWillEat.ForEach(item => Console.WriteLine(item));
-            }
-            else
-            {
-                Console.WriteLine("Sorry, but we have no suitable products for the options you entered.");
-            }
-        }
-
-        private void DisplayItemsSortedByExpirationDate(Refrigerator refrigerator)
-        {
-            List<Item> sortedItems = refrigerator.SortItemsByExpirationDate();
-            foreach (var item in sortedItems)
-            {
-                Console.WriteLine(item);
-            }
-        }
-
-        private void DisplayShelvesSortedByFreeSpace(Refrigerator refrigerator)
-        {
-            List<Shelf> sortedShelves = refrigerator.SortShelvesByFreeSpace();
-            foreach (var shelf in sortedShelves)
-            {
-                Console.WriteLine(shelf);
-            }
-        }
-
-        private void DisplayFridgesSortedByFreeSpace(Refrigerator refrigerator)
-        {
-            List<Refrigerator> sortedFridges = Refrigerator.SortRefrigeratorsByFreeSpace();
-            sortedFridges.ForEach(fridge => Console.WriteLine(fridge));
-        }
-
-        private void PrepareFridgeForShopping(Refrigerator refrigerator)
-        {
-            refrigerator.PrepareFridgeForShopping();
-        }
-
-        private Item GatherNewItemDetailsFromUser()
-        {
-            int kosher, type, spaceItem;
-            string name = "";
-            DateTime expiryDate = DateTime.Today;
-
-            CheckName(ref name);
-            type = GetUserInput<Item.Type>("Enter food type (0 for Food, 1 for Drink): ");
-            kosher = GetUserInput<Item.Kosher>("Enter kosher type (0 for Dairy, 1 for Meat, 2 for Parve): ");
-            expiryDate = CheckDate();
-            spaceItem = CheckSpaceOccupied();
-            Item newItem = new Item(name, (Item.Type)type, (Item.Kosher)kosher, expiryDate, spaceItem);
-
-            return newItem;
-        }
-
-        private void CheckName(ref String name)
-        {
-            while (true)
-            {
-                Console.WriteLine("Enter item name:");
-                name = Console.ReadLine();
-                if (IsAllLetters(name))
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input for item name. Please enter letters only.");
-                }
-            }
-        }
-
-        private bool IsAllLetters(string input)
-        {
-            return input.All(char.IsLetter);
-        }
-
-        private DateTime CheckDate()
-        {
-            while (true)
-            {
-                Console.WriteLine("Enter expiry date (MM/DD/YYYY):");
-                string input = Console.ReadLine();
-                if (TryParseDate(input, out DateTime expiryDate))
-                {
-                    return expiryDate;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid date format. Please enter the date in MM/DD/YYYY format.");
-                    Console.WriteLine("For example, 10/19/2023 for October 19, 2023.");
-                }
-            }
-        }
-
-        private bool TryParseDate(string input, out DateTime expiryDate)
-        {
-            return DateTime.TryParseExact(input, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out expiryDate);
-        }
-
-        private int CheckSpaceOccupied()
-        {
-            int spaceItem;
-            while (true)
-            {
-                Console.WriteLine("Enter space occupied by the item:");
-                string spaceInput = Console.ReadLine();
-                if (int.TryParse(spaceInput, out spaceItem) && spaceItem > 0)
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input for space. Please enter a positive integer.");
-                }
-            }
-            return spaceItem;
-        }
-
-        private bool TryParseEnumInput<TEnum>(out int userInputInt) where TEnum : Enum
-        {
-            return int.TryParse(Console.ReadLine(), out userInputInt) && Enum.IsDefined(typeof(TEnum), userInputInt);
-        }
-
-        private int GetUserInput<TEnum>(string prompt) where TEnum : Enum
-        {
-            int userInput;
-            while (true)
-            {
-                Console.WriteLine(prompt);
-                if (TryParseEnumInput<TEnum>(out int userInputInt))
-                {
-                    userInput = userInputInt;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine($"Invalid input. Please enter a valid value for {typeof(TEnum).Name}. Please try again.");
-                }
-            }
-            return userInput;
-        }
-
-        private Guid GetItemIdForRemoval()
-        {
-            while (true)
-            {
-                Console.WriteLine("Enter a GUID:");
-                string input = Console.ReadLine();
-                if (Guid.TryParse(input, out Guid identifier))
-                {
-                    return identifier;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input. Please enter a valid GUID.");
-                }
             }
         }
     }
