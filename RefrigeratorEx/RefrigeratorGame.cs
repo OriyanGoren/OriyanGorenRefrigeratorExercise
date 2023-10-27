@@ -6,7 +6,7 @@ namespace RefrigeratorEx
     class RefrigeratorGame
     {
         private Refrigerator _refrigerator;
-        public Dictionary<int, Action<Refrigerator>> _functions = new Dictionary<int, Action<Refrigerator>>();
+        private Dictionary<int, Action<Refrigerator>> _functions = new Dictionary<int, Action<Refrigerator>>();
 
         public RefrigeratorGame()
         {
